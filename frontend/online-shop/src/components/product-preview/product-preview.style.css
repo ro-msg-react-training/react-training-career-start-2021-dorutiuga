@@ -1,0 +1,17 @@
+.container{
+
+    width: 22vw;
+    display: flex;
+    flex-direction: column;
+    height: 550px;
+    align-items: center;
+    position: relative;
+}
+
+.footer{
+    
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+}
