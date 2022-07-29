@@ -1,5 +1,6 @@
+import { Button, Paper, Typography } from "@mui/material";
 import { FC } from "react";
-import "./product-preview.style.css";
+import { useStyle } from "./product.preview.style";
 
 interface ProductPreviewProps {
   name: string;
@@ -8,21 +9,21 @@ interface ProductPreviewProps {
 }
 
 const ProductPreview: FC<ProductPreviewProps> = ({ name, price, image }) => {
+  const classes = useStyle();
   return (
-    <div className="container">
-      <div className="name">
-        <strong>{name}</strong>
-      </div>
-      <div className="name">
-        <img src={image} alt="" />
-      </div>
-      <div className="footer">
-        <span> ${price}</span>
+    <Paper elevation={4}>
+      <Typography variant="h6">{name}</Typography>
+
+      <img src={image} className={classes.img} alt="" />
+      <div className={classes.footer1}>
+        <Typography> ${price}</Typography>
         <span>
-          <button>See details</button>
+          <Button variant="contained" color="secondary">
+            <Typography>See details</Typography>
+          </Button>
         </span>
       </div>
-    </div>
+    </Paper>
   );
 };
 

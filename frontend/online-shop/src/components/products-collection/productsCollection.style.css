@@ -1,8 +1,0 @@
-.collections-overview {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 15px;
-  margin-bottom: 30px;
-  margin-left: 30px;
-}
