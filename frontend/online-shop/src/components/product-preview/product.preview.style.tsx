@@ -1,20 +1,17 @@
-import { createUseStyles } from "react-jss";
+import { styled } from "@mui/system";
 
-// how can I use theme here?
-// tried to use "useTheme and pass it as prop to useStyle and i wanted to set the name background with primary color on the theme but failed "
-export const useStyle = createUseStyles({
-  footer1: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-around",
-    fontSize: "20px",
-    padding: "10px",
-  },
+export const Footer = styled("div")({
+  color: "darkslategray",
+  backgroundColor: "aliceblue",
+  padding: 8,
+  borderRadius: 4,
+  display: "flex",
+  justifyContent: "space-around",
+});
 
-  img: {
-    maxWidth: "100%",
-    maxHeight: "250px",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  },
+export const Image = styled("img")({
+  height: 250,
+  maxWidth: 250,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
 });

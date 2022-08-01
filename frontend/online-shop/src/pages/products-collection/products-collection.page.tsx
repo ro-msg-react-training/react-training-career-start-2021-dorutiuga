@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import "./products-collection.style.css";
 import ProductPreview from "../../components/product-preview/product-preview.component";
 import { Grid } from "@mui/material";
-import axios from "axios";
-
+import { fetchProducts } from "../../services/products.service";
 const ProductsCollection: FC = () => {
   // eslint-disable-next-line
   const [product, setProduct] = useState([
@@ -18,22 +17,14 @@ const ProductsCollection: FC = () => {
   ]);
 
   useEffect(() => {
-    const api: string = `http://localhost:4000/products`;
-    axios.get(api).then(
-      (res) => {
-        setProduct(res.data);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    fetchProducts({ setProduct });
     // eslint-disable-next-line
   }, []);
 
   return (
     <Grid container spacing={2}>
       {product.map((product) => (
-        <Grid item xs={3} key={product.id}>
+        <Grid item xs={12} md={6} lg={4} xl={3} key={product.id}>
           <ProductPreview {...product} />
         </Grid>
       ))}
