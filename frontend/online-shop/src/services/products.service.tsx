@@ -1,26 +1,17 @@
 import axios from "axios";
+import { PRODUCTS_ENDPOINT } from "../helpers/strings";
 
-import { productsEndpoint } from "../helpers/strings";
-
-export const fetchProducts = ({ setProduct }: any) => {
-  axios.get(productsEndpoint).then(
-    (res) => {
-      setProduct(res.data);
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
+export const fetchProducts = async () => {
+  const res = await axios.get(PRODUCTS_ENDPOINT);
+  return res;
 };
 
-export const fetchProductById = ({ setProduct, params }: any) => {
-  const api: string = `${productsEndpoint}/${params.id}`;
-  axios.get(api).then(
-    (res) => {
-      setProduct(res.data);
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
+export const fetchProductById = async ({ id }: any) => {
+  const res = await axios.get(PRODUCTS_ENDPOINT.concat(`/${id}`));
+  return res;
+};
+
+export const deleteProductById = async ({ id }: any) => {
+  const res = await axios.delete(PRODUCTS_ENDPOINT.concat(`/${id}`));
+  return res;
 };
