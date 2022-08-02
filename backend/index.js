@@ -12,8 +12,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-function toHeader({id, name, category, price}) {
-    return { id, name, category, price };
+function toHeader({id, name, category, price, image}) {
+    return { id, name, category, price, image };
 }
 
 function copy(id, { name, category, price, description, image }) {
