@@ -3,7 +3,8 @@ export const routes = {
   homepage: "/home",
   products: "/products",
   productId: "/products/:id",
-  cart:"/cart"
+  cart:"/cart",
+  login: "/login"
 };
 
 export {};

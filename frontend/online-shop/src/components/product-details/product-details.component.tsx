@@ -1,8 +1,13 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { CART_LOCAL_STORAGE_KEY } from "../../helpers/strings";
-import { CartItems } from "../../models/cart-items.model";
+import { handleAddItemToCart } from "../../helpers/cart.utils";
 import { Product } from "../../models/product.model";
 import {
   deleteProductById,
@@ -13,36 +18,25 @@ import ConfirmationDialog from "../dialog/confirmation-dialog.component";
 const ProductDetail: FC = () => {
   const params = useParams();
   const navigate = useNavigate();
-
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [product, setProduct] = useState<Product>();
+  const [alert, setAlert] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await fetchProductById(params);
-      setProduct(res.data);
+      try {
+        const res = await fetchProductById(params);
+        setProduct(res.data);
+      } catch (err) {
+        setTimeout(() => {
+          navigate("../products", { replace: true });
+        }, 2000);
+      }
     };
     fetch();
+    // eslint-disable-next-line
   }, [params]);
-
-  const handleAddItemToCart = () => {
-    let localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-    const cart: CartItems[] = [];
-    if (localCart) {
-      cart.push(...JSON.parse(localCart));
-    }
-    let existingProduct = cart.find(
-      (cartItem) => cartItem.product.id === product?.id
-    );
-    console.log(existingProduct);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else if (product) {
-      cart.push({ product: product, quantity: 1 });
-    }
-    localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(cart));
-  };
-
+  console.log(product);
   return (
     <>
       {product ? (
@@ -72,6 +66,17 @@ const ProductDetail: FC = () => {
                 }}
               />
             </span>
+            <Button
+              variant="outlined"
+              sx={{ m: 2 }}
+              color="info"
+              onClick={() => {
+                handleAddItemToCart(product, () => {});
+                setAlert(true);
+              }}
+            >
+              Add To Cart
+            </Button>
           </div>
 
           <div className="details-content">
@@ -83,16 +88,27 @@ const ProductDetail: FC = () => {
             </Typography>
             <img src={product.image} alt="undefined" />
           </div>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => handleAddItemToCart()}
+
+          <Snackbar
+            open={alert}
+            autoHideDuration={6000}
+            onClose={() => setAlert(false)}
           >
-            Add To Cart
-          </Button>
+            <Alert
+              onClose={() => setAlert(false)}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              Product {product.name} added succesfully to cart
+            </Alert>
+          </Snackbar>
         </div>
       ) : (
-        <CircularProgress></CircularProgress>
+        <>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </div>
+        </>
       )}
     </>
   );

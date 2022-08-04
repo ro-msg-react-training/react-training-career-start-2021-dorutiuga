@@ -7,6 +7,7 @@ import ProductDetail from "./components/product-details/product-details.componen
 import { myTheme } from "./helpers/custom-theme";
 import { routes } from "./helpers/routes";
 import HomePage from "./pages/home/home.page";
+import Login from "./pages/login/login.page";
 import ProductsCollection from "./pages/products-collection/products-collection.page";
 import ShoppingCart from "./pages/shoping-cart/shopping-cart.page";
 
@@ -24,6 +25,7 @@ const App = () => {
           <Route path={routes.products} element={<ProductsCollection />} />
           <Route path={routes.productId} element={<ProductDetail />} />
           <Route path={routes.cart} element={<ShoppingCart />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Container>
     </ThemeProvider>
