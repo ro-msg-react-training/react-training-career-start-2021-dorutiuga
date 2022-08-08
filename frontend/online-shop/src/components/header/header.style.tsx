@@ -26,6 +26,15 @@ export const CartLink = styled("div")({
   position: "absolute",
   right: "25px",
   top: "25px",
+
+  cursor: "pointer",
+  margin: "auto",
+  height: "100%",
+});
+export const AddLink = styled("div")({
+  position: "absolute",
+  right: "90px",
+  top: "25px",
   cursor: "pointer",
   margin: "auto",
   height: "100%",

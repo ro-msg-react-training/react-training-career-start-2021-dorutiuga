@@ -14,6 +14,7 @@ import {
   fetchProductById,
 } from "../../services/products.service";
 import ConfirmationDialog from "../dialog/confirmation-dialog.component";
+import { Container, DetailsContainer, Image } from "./product-details.style";
 
 const ProductDetail: FC = () => {
   const params = useParams();
@@ -25,8 +26,10 @@ const ProductDetail: FC = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await fetchProductById(params);
-        setProduct(res.data);
+        if (params) {
+          const res = await fetchProductById(params);
+          setProduct(res.data);
+        }
       } catch (err) {
         setTimeout(() => {
           navigate("../products", { replace: true });
@@ -36,14 +39,23 @@ const ProductDetail: FC = () => {
     fetch();
     // eslint-disable-next-line
   }, [params]);
-  console.log(product);
+
   return (
     <>
       {product ? (
         <div className="product-detail-container">
           <div className="details-header">
             <h1>Product: {product.name} </h1>
-            <Button variant="outlined" color="secondary" sx={{ m: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() =>
+                navigate(`../products/edit/${product.id}`, {
+                  replace: true,
+                })
+              }
+              sx={{ m: 2 }}
+            >
               Edit
             </Button>
 
@@ -78,17 +90,19 @@ const ProductDetail: FC = () => {
               Add To Cart
             </Button>
           </div>
-
-          <div className="details-content">
-            <Typography variant="h6">Name: {product.name}</Typography>
-            <Typography variant="h6">Category:{product.category}</Typography>
-            <Typography variant="h6">Price:{product.price}</Typography>
-            <Typography variant="h6">
-              Description:{product.description}
-            </Typography>
-            <img src={product.image} alt="undefined" />
-          </div>
-
+          <Container>
+            <DetailsContainer>
+              <Typography variant="h6">Name: {product.name}</Typography>
+              <Typography variant="h6">Category:{product.category}</Typography>
+              <Typography variant="h6">Price:{product.price}</Typography>
+              <Typography variant="h6">
+                Description:{product.description}
+              </Typography>
+            </DetailsContainer>
+            <Image>
+              <img src={product.image} alt="undefined" />
+            </Image>
+          </Container>
           <Snackbar
             open={alert}
             autoHideDuration={6000}

@@ -4,7 +4,10 @@ export const routes = {
   products: "/products",
   productId: "/products/:id",
   cart:"/cart",
-  login: "/login"
+  login: "/login",
+  ordersHistory: '/orders',
+  editProduct: '/products/edit/:id',
+  addProduct:  '/add'
 };
 
 export {};

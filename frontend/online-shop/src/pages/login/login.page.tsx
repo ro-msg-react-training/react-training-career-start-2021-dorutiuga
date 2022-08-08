@@ -28,6 +28,7 @@ const Login = () => {
     const res = await fetchLoginCredentials(credentials);
     localStorage.setItem(USER_LOCAL_STORAGE_TOKEN, JSON.stringify(res.data));
     navigate("/products", { replace: true });
+    window.location.reload();
   };
 
   return (

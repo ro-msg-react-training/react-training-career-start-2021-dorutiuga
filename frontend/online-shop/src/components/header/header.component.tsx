@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { CartLink, HeaderComponent, OptionLink } from "./header.style";
+import { AddLink, CartLink, HeaderComponent, OptionLink } from "./header.style";
 import { routes } from "../../helpers/routes";
 import { useEffect, useState } from "react";
 import { USER_LOCAL_STORAGE_TOKEN } from "../../helpers/strings";
@@ -17,6 +17,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem(USER_LOCAL_STORAGE_TOKEN);
+    window.location.reload();
   };
   return (
     <HeaderComponent>
@@ -25,6 +26,15 @@ const Header = () => {
           <Typography> Home</Typography>
         </OptionLink>
       </Link>
+      {user ? (
+        <Link style={{ textDecoration: "none" }} to={routes.ordersHistory}>
+          <OptionLink>
+            <Typography>Order History</Typography>
+          </OptionLink>
+        </Link>
+      ) : (
+        <p></p>
+      )}
       <Link style={{ textDecoration: "none" }} to={routes.products}>
         <OptionLink>
           <Typography>Products</Typography>
@@ -61,6 +71,15 @@ const Header = () => {
           <AiOutlineShoppingCart size={25} color="red" />
         </CartLink>
       </Link>
+      {user ? (
+        <Link to={routes.addProduct}>
+          <AddLink>
+            <Button variant="outlined">Add new product</Button>
+          </AddLink>
+        </Link>
+      ) : (
+        <></>
+      )}
     </HeaderComponent>
   );
 };
