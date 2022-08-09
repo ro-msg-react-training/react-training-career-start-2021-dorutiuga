@@ -1,47 +1,45 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { CART_LOCAL_STORAGE_KEY } from "../../helpers/strings";
-import { CartItems } from "../../models/cart-items.model";
+import { handleAddItemToCart } from "../../helpers/cart.utils";
+import { routes } from "../../helpers/routes";
 import { Product } from "../../models/product.model";
 import {
   deleteProductById,
   fetchProductById,
 } from "../../services/products.service";
 import ConfirmationDialog from "../dialog/confirmation-dialog.component";
+import { Container, DetailsContainer, Image } from "./product-details.style";
 
 const ProductDetail: FC = () => {
   const params = useParams();
   const navigate = useNavigate();
-
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [product, setProduct] = useState<Product>();
+  const [alert, setAlert] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await fetchProductById(params);
-      setProduct(res.data);
+      try {
+        if (params) {
+          const res = await fetchProductById(params.id || "");
+          setProduct(res.data);
+        }
+      } catch (err) {
+        setTimeout(() => {
+          navigate(routes.navigate, { replace: true });
+        }, 2000);
+      }
     };
     fetch();
+    // eslint-disable-next-line
   }, [params]);
-
-  const handleAddItemToCart = () => {
-    let localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-    const cart: CartItems[] = [];
-    if (localCart) {
-      cart.push(...JSON.parse(localCart));
-    }
-    let existingProduct = cart.find(
-      (cartItem) => cartItem.product.id === product?.id
-    );
-    console.log(existingProduct);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else if (product) {
-      cart.push({ product: product, quantity: 1 });
-    }
-    localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(cart));
-  };
 
   return (
     <>
@@ -49,7 +47,16 @@ const ProductDetail: FC = () => {
         <div className="product-detail-container">
           <div className="details-header">
             <h1>Product: {product.name} </h1>
-            <Button variant="outlined" color="secondary" sx={{ m: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() =>
+                navigate(`../products/edit/${product.id}`, {
+                  replace: true,
+                })
+              }
+              sx={{ m: 2 }}
+            >
               Edit
             </Button>
 
@@ -68,31 +75,53 @@ const ProductDetail: FC = () => {
                 onConfirm={() => {
                   console.log("Deleted");
                   deleteProductById(params);
-                  navigate("../products", { replace: true });
+                  navigate(routes.navigate, { replace: true });
                 }}
               />
             </span>
+            <Button
+              variant="outlined"
+              sx={{ m: 2 }}
+              color="info"
+              onClick={() => {
+                handleAddItemToCart(product, () => {});
+                setAlert(true);
+              }}
+            >
+              Add To Cart
+            </Button>
           </div>
-
-          <div className="details-content">
-            <Typography variant="h6">Name: {product.name}</Typography>
-            <Typography variant="h6">Category:{product.category}</Typography>
-            <Typography variant="h6">Price:{product.price}</Typography>
-            <Typography variant="h6">
-              Description:{product.description}
-            </Typography>
-            <img src={product.image} alt="undefined" />
-          </div>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => handleAddItemToCart()}
+          <Container>
+            <DetailsContainer>
+              <Typography variant="h6">Name: {product.name}</Typography>
+              <Typography variant="h6">Category:{product.category}</Typography>
+              <Typography variant="h6">Price:{product.price}</Typography>
+              <Typography variant="h6">
+                Description:{product.description}
+              </Typography>
+            </DetailsContainer>
+            <Image>
+              <img src={product.image} alt="undefined" />
+            </Image>
+          </Container>
+          <Snackbar
+            open={alert}
+            autoHideDuration={6000}
+            onClose={() => setAlert(false)}
           >
-            Add To Cart
-          </Button>
+            <Alert
+              onClose={() => setAlert(false)}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              Product {product.name} added succesfully to cart
+            </Alert>
+          </Snackbar>
         </div>
       ) : (
-        <CircularProgress></CircularProgress>
+        <CircularProgress
+          style={{ display: "flex", justifyContent: "center" }}
+        />
       )}
     </>
   );

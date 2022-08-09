@@ -6,7 +6,7 @@ const swagger = require('swagger-ui-express');
 const products = require('./products.json');
 const users = require('./users.json');
 const sales = require('./sales.json');
-
+const orders = require('./orders.json');
 const app = express();
 
 app.use(cors());
@@ -83,10 +83,19 @@ app.post('/orders', function (req, res) {
                 return;
             }
         }
+        const id = nextId++;
+        const order = req.body;
+        order.id = id;
+        orders[id] =  order;
         res.sendStatus(201);
+     
     } else {
         res.status(404).send("Customer not found.");
     }
+});
+
+app.get('/orders', function (_, res) {
+    res.send(Object.values(orders));
 });
 
 
