@@ -1,6 +1,7 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "../../helpers/routes";
 import { Product } from "../../models/product.model";
 import {
   fetchProductById,
@@ -14,26 +15,15 @@ const EditProduct = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await fetchProductById(params);
+      const res = await fetchProductById(params.id || "");
       setProduct(res.data);
-      console.log(res.data);
     };
     fetch();
   }, [params]);
 
   const handleSave = async (product: Product) => {
-    const param = {
-      id: product.id,
-      products: {
-        name: product.name,
-        category: product.category,
-        image: product.image,
-        price: product.price,
-        description: product.description,
-      },
-    };
-    await updateProductById(param);
-    navigate("../products", { replace: true });
+    await updateProductById(product.id, product);
+    navigate(routes.navigate, { replace: true });
   };
 
   return product ? (
@@ -77,7 +67,9 @@ const EditProduct = () => {
       <Button
         variant="outlined"
         sx={{ m: 2 }}
-        onClick={() => navigate(`../products/${params.id}`, { replace: true })}
+        onClick={() =>
+          navigate(`${routes.navigate}/${params.id}`, { replace: true })
+        }
       >
         Cancel
       </Button>

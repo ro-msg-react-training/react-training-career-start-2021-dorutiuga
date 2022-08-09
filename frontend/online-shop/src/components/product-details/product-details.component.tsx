@@ -8,6 +8,7 @@ import {
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { handleAddItemToCart } from "../../helpers/cart.utils";
+import { routes } from "../../helpers/routes";
 import { Product } from "../../models/product.model";
 import {
   deleteProductById,
@@ -27,12 +28,12 @@ const ProductDetail: FC = () => {
     const fetch = async () => {
       try {
         if (params) {
-          const res = await fetchProductById(params);
+          const res = await fetchProductById(params.id || "");
           setProduct(res.data);
         }
       } catch (err) {
         setTimeout(() => {
-          navigate("../products", { replace: true });
+          navigate(routes.navigate, { replace: true });
         }, 2000);
       }
     };
@@ -74,7 +75,7 @@ const ProductDetail: FC = () => {
                 onConfirm={() => {
                   console.log("Deleted");
                   deleteProductById(params);
-                  navigate("../products", { replace: true });
+                  navigate(routes.navigate, { replace: true });
                 }}
               />
             </span>
@@ -118,11 +119,9 @@ const ProductDetail: FC = () => {
           </Snackbar>
         </div>
       ) : (
-        <>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <CircularProgress />
-          </div>
-        </>
+        <CircularProgress
+          style={{ display: "flex", justifyContent: "center" }}
+        />
       )}
     </>
   );

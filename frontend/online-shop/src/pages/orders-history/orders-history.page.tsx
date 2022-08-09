@@ -6,20 +6,20 @@ import { fetchOrdersHistory } from "../../services/orders-history.service";
 
 const OrdersHistory = () => {
   const [ordersHistory, setOrdersHistory] = useState([]);
+
   useEffect(() => {
     const fetch = async () => {
       const res = await fetchOrdersHistory();
       setOrdersHistory(res.data);
     };
     fetch();
-    console.log(ordersHistory);
     // eslint-disable-next-line
   }, []);
 
   return (
     <div>
-      <Typography>Order history: </Typography>
-      <br></br>
+      <Typography sx={{ m: 2 }}>Order history: </Typography>
+
       {ordersHistory.map((item: OrderHistory) => (
         <OrderHistoryItem {...item} key={item.id}></OrderHistoryItem>
       ))}

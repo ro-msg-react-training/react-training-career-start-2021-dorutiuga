@@ -1,61 +1,64 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Product } from "../../models/product.model";
 import { createProduct } from "../../services/products.service";
 
 const AddProduct = () => {
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState("");
+  const [product, setProduct] = useState<Product>({
+    id: 0,
+    name: "",
+    category: "",
+    price: 0,
+    description: "",
+    image: "",
+  });
+
   const navigate = useNavigate();
+
   const handleSave = async () => {
-    const params = {
-      product: {
-        name: name,
-        category: category,
-        image: image,
-        price: price,
-        description: description,
-      },
-    };
-    await createProduct(params);
+    const res = await createProduct(product);
+    console.log(res);
     navigate("../products", { replace: true });
   };
+
   return (
     <>
       <Typography> Create a new product</Typography> <br />
       <Typography>Name:</Typography>
       <TextField
         id="filled-basic"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={product.name}
+        onChange={(e) => setProduct({ ...product, name: e.target.value })}
       ></TextField>
       <Typography>Category:</Typography>
       <TextField
         id="filled-basic"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
+        value={product.category}
+        onChange={(e) => setProduct({ ...product, category: e.target.value })}
       ></TextField>
       <Typography>Image:</Typography>
       <TextField
         id="filled-basic"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
+        value={product.image}
+        onChange={(e) => setProduct({ ...product, image: e.target.value })}
       ></TextField>
       <Typography>Price:</Typography>
       <TextField
         type="number"
         id="filled-basic"
-        value={price}
-        onChange={(e) => setPrice(Number(e.target.value))}
+        value={product.price}
+        onChange={(e) =>
+          setProduct({ ...product, price: Number(e.target.value) })
+        }
       ></TextField>
       <Typography>Description:</Typography>
       <TextField
         fullWidth
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        value={product.description}
+        onChange={(e) =>
+          setProduct({ ...product, description: e.target.value })
+        }
       ></TextField>
       <Button
         variant="outlined"

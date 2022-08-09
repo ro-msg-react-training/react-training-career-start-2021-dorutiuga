@@ -7,7 +7,8 @@ export const routes = {
   login: "/login",
   ordersHistory: '/orders',
   editProduct: '/products/edit/:id',
-  addProduct:  '/add'
+  addProduct:  '/add',
+  navigate: "../products"
 };
 
 export {};

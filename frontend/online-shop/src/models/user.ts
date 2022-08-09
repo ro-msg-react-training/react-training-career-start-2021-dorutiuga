@@ -1,7 +1,7 @@
 export interface User {
- username: string;
- fullName:string;
- roles :string[];
-  }
-  export {};
+    username: string;
+    fullName:string;
+    roles :string[];
+}
+
   

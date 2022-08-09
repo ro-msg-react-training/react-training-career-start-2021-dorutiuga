@@ -3,12 +3,12 @@ import { Product } from "../models/product.model";
 import { CART_LOCAL_STORAGE_KEY } from "./strings";
 
 export const handleAddItemToCart = (product: Product, setCart: any) => {
-  let localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
+  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
   const cart: CartItems[] = [];
   if (localCart) {
     cart.push(...JSON.parse(localCart));
   }
-  let existingProduct = cart.find(
+  const existingProduct = cart.find(
     (cartItem) => cartItem.product.id === product?.id
   );
   if (existingProduct) {
@@ -21,12 +21,12 @@ export const handleAddItemToCart = (product: Product, setCart: any) => {
 };
 
 export const handleDecreaseQuantity = (product: Product, setCart: any) => {
-  let localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
+  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
   const cart: CartItems[] = [];
   if (localCart) {
     cart.push(...JSON.parse(localCart));
   }
-  let existingProduct = cart.find(
+  const existingProduct = cart.find(
     (cartItem) => cartItem.product.id === product?.id
   );
   if (existingProduct && existingProduct.quantity > 1)
@@ -38,7 +38,7 @@ export const handleDecreaseQuantity = (product: Product, setCart: any) => {
 };
 
 export const removeProduct = (product: Product, setCart: any) => {
-  let localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
+  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
   const cart: CartItems[] = [];
   if (localCart) {
     cart.push(...JSON.parse(localCart));
