@@ -1,49 +1,44 @@
 import { CartItems } from "../models/cart-items.model";
 import { Product } from "../models/product.model";
-import { CART_LOCAL_STORAGE_KEY } from "./strings";
 
-export const handleAddItemToCart = (product: Product, setCart: any) => {
-  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-  const cart: CartItems[] = [];
-  if (localCart) {
-    cart.push(...JSON.parse(localCart));
-  }
-  const existingProduct = cart.find(
-    (cartItem) => cartItem.product.id === product?.id
+export const addItemsToCart = (
+  cartItems: CartItems[],
+  cartItemToAdd: Product
+) => {
+  const existingItemCart = cartItems.find(
+    (item) => item.product.id === cartItemToAdd.id
   );
-  if (existingProduct) {
-    existingProduct.quantity += 1;
-  } else if (product) {
-    cart.push({ product: product, quantity: 1 });
+
+  if (existingItemCart) {
+    existingItemCart.quantity += 1;
+  } else {
+    cartItems.push({ product: cartItemToAdd, quantity: 1 });
   }
-  localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(cart));
-  setCart(cart);
+
+  return cartItems;
 };
 
-export const handleDecreaseQuantity = (product: Product, setCart: any) => {
-  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-  const cart: CartItems[] = [];
-  if (localCart) {
-    cart.push(...JSON.parse(localCart));
-  }
-  const existingProduct = cart.find(
-    (cartItem) => cartItem.product.id === product?.id
+export const removeItemFromCart = (
+  cartItems: CartItems[],
+  cartItemToRemove: Product
+) => {
+  const existingItemCart = cartItems.find(
+    (item) => item.product.id === cartItemToRemove.id
   );
-  if (existingProduct && existingProduct.quantity > 1)
-    existingProduct.quantity -= 1;
-  else removeProduct(product, () => setCart);
-
-  localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(cart));
-  setCart(cart);
+  if (existingItemCart?.quantity === 1) {
+    return cartItems.filter(
+      (cartItem) => cartItem.product.id !== cartItemToRemove.id
+    );
+  }
+  if (existingItemCart) {
+    existingItemCart.quantity -= 1;
+  }
+  return cartItems;
 };
 
-export const removeProduct = (product: Product, setCart: any) => {
-  const localCart = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-  const cart: CartItems[] = [];
-  if (localCart) {
-    cart.push(...JSON.parse(localCart));
-  }
-  const newCart = cart.filter((item) => item.product.id !== product.id);
-  localStorage.setItem(CART_LOCAL_STORAGE_KEY, JSON.stringify(newCart));
-  setCart(newCart);
+export const removeProduct = (
+  cartItems: CartItems[],
+  productToRemove: Product
+) => {
+  return cartItems.filter((item) => item.product.id !== productToRemove.id);
 };

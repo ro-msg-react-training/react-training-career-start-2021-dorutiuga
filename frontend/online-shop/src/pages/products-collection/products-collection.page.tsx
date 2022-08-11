@@ -1,24 +1,23 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import "./products-collection.style.css";
 import ProductPreview from "../../components/product-preview/product-preview.component";
 import { CircularProgress, Grid } from "@mui/material";
-import { fetchProducts } from "../../services/products.service";
 import { Product } from "../../models/product.model";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchProductsStart } from "../../store/slices/products-slice";
 
 const ProductsCollection: FC = () => {
-  const [products, setProducts] = useState([]);
+  const products = useAppSelector((state) => state.products.products);
+  const isLoading = useAppSelector((state) => state.products.isLoading);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const fetch = async () => {
-      const result = await fetchProducts();
-      setProducts(result.data);
-    };
-    fetch();
-  }, []);
+    dispatch(fetchProductsStart());
+  }, [dispatch]);
 
   return (
     <>
-      {products.length > 0 ? (
+      {!isLoading ? (
         <Grid container spacing={2}>
           {products.map((product: Product) => (
             <Grid item xs={12} md={6} lg={4} xl={3} key={product.id}>

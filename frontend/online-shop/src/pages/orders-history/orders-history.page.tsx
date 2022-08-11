@@ -1,29 +1,30 @@
-import { Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { CircularProgress, Typography } from "@mui/material";
+import { useEffect } from "react";
 import OrderHistoryItem from "../../components/order-history-item/order-history.component";
 import { OrderHistory } from "../../models/order-history.model";
-import { fetchOrdersHistory } from "../../services/orders-history.service";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchOrderHistoryStart } from "../../store/slices/order-history-slice";
 
 const OrdersHistory = () => {
-  const [ordersHistory, setOrdersHistory] = useState([]);
+  const dispatch = useAppDispatch();
+  const ordersHistory = useAppSelector((state) => state.orderHistory.orders);
+  const isLoading = useAppSelector((state) => state.orderHistory.isLoading);
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await fetchOrdersHistory();
-      setOrdersHistory(res.data);
-    };
-    fetch();
-    // eslint-disable-next-line
-  }, []);
+    dispatch(fetchOrderHistoryStart());
+  }, [dispatch]);
 
   return (
-    <div>
+    <>
       <Typography sx={{ m: 2 }}>Order history: </Typography>
-
-      {ordersHistory.map((item: OrderHistory) => (
-        <OrderHistoryItem {...item} key={item.id}></OrderHistoryItem>
-      ))}
-    </div>
+      {!isLoading ? (
+        ordersHistory.map((item: OrderHistory) => (
+          <OrderHistoryItem {...item} key={item.id}></OrderHistoryItem>
+        ))
+      ) : (
+        <CircularProgress />
+      )}
+    </>
   );
 };
 

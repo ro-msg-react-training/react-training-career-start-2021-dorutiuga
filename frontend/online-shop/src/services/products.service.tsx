@@ -4,15 +4,15 @@ import { Product } from "../models/product.model";
 
 export const fetchProducts = async () => {
   const res = await axios.get(BASE_ENDPOINT.concat("products"));
-  return res;
+  return res.data;
 };
 
 export const fetchProductById = async (id: string) => {
   const res = await axios.get(BASE_ENDPOINT.concat(`products/${id}`));
-  return res;
+  return res.data;
 };
 
-export const deleteProductById = async ({ id }: any) => {
+export const deleteProductById = async (id: string) => {
   const res = await axios.delete(BASE_ENDPOINT.concat(`products/${id}`));
   return res;
 };
