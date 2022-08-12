@@ -21,7 +21,7 @@ const EditProduct = () => {
 
   const handleSave = async (product: Product) => {
     await updateProductById(product.id, product);
-    navigate(`../products/${product.id}`, { replace: true });
+    navigate(`${routes.navigate}/${product.id}`, { replace: true });
   };
 
   return product ? (

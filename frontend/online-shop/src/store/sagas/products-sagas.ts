@@ -40,6 +40,7 @@ function* getProductDetailFetch(action: PayloadAction<string>) {
     yield put(fetchProductDetailsFailure(err));
   }
 }
+
 function* editProduct(action: PayloadAction<string>) {
   try {
     const product: Product = yield call(() => fetchProductById(action.payload));
