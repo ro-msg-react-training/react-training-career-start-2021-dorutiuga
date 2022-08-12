@@ -1,11 +1,6 @@
-import { Link } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 const HomePage = () => {
-  return (
-    <div>
-      <p>this is home page. </p>
-      <Link to="/products"> Go to products</Link>
-    </div>
-  );
+  return <Typography>Welcome to online shop. Training by .msg</Typography>;
 };
 export default HomePage;

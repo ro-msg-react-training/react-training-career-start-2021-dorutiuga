@@ -1,29 +1,27 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../helpers/routes";
 import { Product } from "../../models/product.model";
+import { updateProductById } from "../../services/products.service";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
-  fetchProductById,
-  updateProductById,
-} from "../../services/products.service";
+  fetchEditProductStart,
+  updateProduct,
+} from "../../store/slices/edit-product-slice";
 
 const EditProduct = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product>();
-
+  const dispatch = useAppDispatch();
+  const product = useAppSelector((state) => state.editProduct.product);
   useEffect(() => {
-    const fetch = async () => {
-      const res = await fetchProductById(params.id || "");
-      setProduct(res.data);
-    };
-    fetch();
-  }, [params]);
+    dispatch(fetchEditProductStart(params.id || ""));
+  }, [params, dispatch]);
 
   const handleSave = async (product: Product) => {
     await updateProductById(product.id, product);
-    navigate(routes.navigate, { replace: true });
+    navigate(`${routes.navigate}/${product.id}`, { replace: true });
   };
 
   return product ? (
@@ -33,19 +31,25 @@ const EditProduct = () => {
       <TextField
         id="filled-basic"
         value={product.name}
-        onChange={(e) => setProduct({ ...product, name: e.target.value })}
+        onChange={(e) =>
+          dispatch(updateProduct({ ...product, name: e.target.value }))
+        }
       ></TextField>
       <Typography>Category:</Typography>
       <TextField
         id="filled-basic"
         value={product.category}
-        onChange={(e) => setProduct({ ...product, category: e.target.value })}
+        onChange={(e) =>
+          dispatch(updateProduct({ ...product, category: e.target.value }))
+        }
       ></TextField>
       <Typography>Image:</Typography>
       <TextField
         id="filled-basic"
         value={product.image}
-        onChange={(e) => setProduct({ ...product, image: e.target.value })}
+        onChange={(e) =>
+          dispatch(updateProduct({ ...product, image: e.target.value }))
+        }
       ></TextField>
       <Typography>Price:</Typography>
       <TextField
@@ -53,7 +57,7 @@ const EditProduct = () => {
         id="filled-basic"
         value={product.price}
         onChange={(e) =>
-          setProduct({ ...product, price: Number(e.target.value) })
+          dispatch(updateProduct({ ...product, price: Number(e.target.value) }))
         }
       ></TextField>
       <Typography>Description:</Typography>
@@ -61,7 +65,7 @@ const EditProduct = () => {
         fullWidth
         value={product.description}
         onChange={(e) =>
-          setProduct({ ...product, description: e.target.value })
+          dispatch(updateProduct({ ...product, description: e.target.value }))
         }
       ></TextField>
       <Button

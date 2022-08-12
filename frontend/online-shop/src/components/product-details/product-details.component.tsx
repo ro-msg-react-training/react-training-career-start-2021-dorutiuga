@@ -5,41 +5,33 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { handleAddItemToCart } from "../../helpers/cart.utils";
 import { routes } from "../../helpers/routes";
-import { Product } from "../../models/product.model";
+import { deleteProductById } from "../../services/products.service";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { increaseQuantity } from "../../store/slices/cart-slice";
 import {
-  deleteProductById,
-  fetchProductById,
-} from "../../services/products.service";
+  fetchProductDetailsStart,
+  openAlert,
+  openConfirmationDialog,
+} from "../../store/slices/product-details-slice";
 import ConfirmationDialog from "../dialog/confirmation-dialog.component";
 import { Container, DetailsContainer, Image } from "./product-details.style";
 
 const ProductDetail: FC = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [product, setProduct] = useState<Product>();
-  const [alert, setAlert] = useState(false);
+  const dispatch = useAppDispatch();
+  const product = useAppSelector((state) => state.productDetails.product);
+  const confirmOpen = useAppSelector(
+    (state) => state.productDetails.confirmOpen
+  );
+  const alert = useAppSelector((state) => state.productDetails.alert);
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        if (params) {
-          const res = await fetchProductById(params.id || "");
-          setProduct(res.data);
-        }
-      } catch (err) {
-        setTimeout(() => {
-          navigate(routes.navigate, { replace: true });
-        }, 2000);
-      }
-    };
-    fetch();
-    // eslint-disable-next-line
-  }, [params]);
+    dispatch(fetchProductDetailsStart(params.id || ""));
+  }, [params, dispatch]);
 
   return (
     <>
@@ -59,23 +51,22 @@ const ProductDetail: FC = () => {
             >
               Edit
             </Button>
-
             <span>
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => setConfirmOpen(true)}
+                onClick={() => dispatch(openConfirmationDialog(true))}
               >
                 Delete
               </Button>
               <ConfirmationDialog
                 title="Are you sure you want to delete this product?"
                 open={confirmOpen}
-                setOpen={setConfirmOpen}
+                setOpen={() => dispatch(openConfirmationDialog(false))}
                 onConfirm={() => {
-                  console.log("Deleted");
-                  deleteProductById(params);
+                  deleteProductById(params.id || "");
                   navigate(routes.navigate, { replace: true });
+                  dispatch(openConfirmationDialog(false));
                 }}
               />
             </span>
@@ -84,8 +75,8 @@ const ProductDetail: FC = () => {
               sx={{ m: 2 }}
               color="info"
               onClick={() => {
-                handleAddItemToCart(product, () => {});
-                setAlert(true);
+                dispatch(increaseQuantity(product));
+                dispatch(openAlert(true));
               }}
             >
               Add To Cart
@@ -107,10 +98,10 @@ const ProductDetail: FC = () => {
           <Snackbar
             open={alert}
             autoHideDuration={6000}
-            onClose={() => setAlert(false)}
+            onClose={() => dispatch(openAlert(false))}
           >
             <Alert
-              onClose={() => setAlert(false)}
+              onClose={() => dispatch(openAlert(false))}
               severity="success"
               sx={{ width: "100%" }}
             >

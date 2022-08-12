@@ -12,11 +12,12 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../helpers/routes";
-import { USER_LOCAL_STORAGE_TOKEN } from "../../helpers/strings";
-import { fetchLoginCredentials } from "../../services/users.service";
+import { useAppDispatch } from "../../store/hooks";
+import { fetchUserStart } from "../../store/slices/user-slice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,10 +26,8 @@ const Login = () => {
       email: data.get("email"),
       password: data.get("password"),
     };
-    const res = await fetchLoginCredentials(credentials);
-    localStorage.setItem(USER_LOCAL_STORAGE_TOKEN, JSON.stringify(res.data));
+    dispatch(fetchUserStart(credentials));
     navigate(routes.products, { replace: true });
-    window.location.reload();
   };
 
   return (

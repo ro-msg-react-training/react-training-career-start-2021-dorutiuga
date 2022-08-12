@@ -1,15 +1,11 @@
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
-import {
-  CART_LOCAL_STORAGE_KEY,
-  USER_LOCAL_STORAGE_TOKEN,
-} from "../../helpers/strings";
-import { CartItems } from "../../models/cart-items.model";
-import { User } from "../../models/user";
 import { createOrder } from "../../services/orders.service";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { emptyCart } from "../../store/slices/cart-slice";
+
 import {
   CheckoutContainer,
   CheckoutHeader,
@@ -18,15 +14,9 @@ import {
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const [cart, setCart] = useState<CartItems[]>([]);
-  const [user, setUser] = useState<User>();
-  useEffect(() => {
-    const localUser = localStorage.getItem(USER_LOCAL_STORAGE_TOKEN);
-    const cartToRevrieve = localStorage.getItem(CART_LOCAL_STORAGE_KEY);
-    if (cartToRevrieve) setCart(JSON.parse(cartToRevrieve));
-    if (localUser) setUser(JSON.parse(localUser));
-    // eslint-disable-next-line
-  }, []);
+  const user = useAppSelector((state) => state.user.user);
+  const cart = useAppSelector((state) => state.cart.cart);
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async () => {
     const params = {
@@ -36,10 +26,8 @@ const ShoppingCart = () => {
         quantity: cart.quantity,
       })),
     };
-    const res = await createOrder(params);
-    console.log(res.data);
-    localStorage.removeItem(CART_LOCAL_STORAGE_KEY);
-    setCart([]);
+    await createOrder(params);
+    dispatch(emptyCart());
   };
 
   return (
@@ -63,7 +51,7 @@ const ShoppingCart = () => {
           </HeaderBlock>
         </CheckoutHeader>
         {cart.map((cart) => (
-          <CheckoutItem {...cart} setCart={setCart} key={cart.product.id} />
+          <CheckoutItem {...cart} key={cart.product.id} />
         ))}
         Total $
         {cart.reduce(
